@@ -4,5 +4,7 @@ Reads onto a CSV file for further analysis. To run, you must have CMake and VS c
 
 Expected Connections Are As Follows:
 Battery is wired in series with the resistor, and the voltage is read in parralel.
+
 AIN0 --> - Battery Terminal/Resistor Connection
+
 AIN1 --> + Battery Terminal/Resistor Connection
