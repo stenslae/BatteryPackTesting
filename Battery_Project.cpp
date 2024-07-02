@@ -95,7 +95,7 @@ int main()
         Battery.voltage = read_LJM.values[0]-read_LJM.values[1];
 	    Battery.power = (Battery.voltage*Battery.voltage)/Battery.resistance;	
 	    //calculate total watt hours
-	    if((count != 0) || (Battery.voltage > init_voltage / 10.0)){
+	    if((count != 0) && (Battery.voltage > init_voltage / 10.0)){
 		    Battery.wh = Battery.power*((Battery.time/60)-(((count-1)*(60.0/Battery.reads_per_minute))/60.0/60.0));
 	    }else{
 		    Battery.wh = 0;
