@@ -93,7 +93,7 @@ int main()
     int finalreads = 0;
 
     // checks to see if the battery is outputing below an arbitrary amount of watts so that recording stops once battery is dead
-    while (finalreads < 20) {
+    while (finalreads < 30) {
         // updates values for data
         read_LJM.read();
 
@@ -108,7 +108,7 @@ int main()
             avecount += 1;
             Battery.tot_volts += Battery.voltage;
         }
-        //calculate total watt hours and mamp hours
+        //calculate total watt hours
 	    if((count != 0) && (Battery.voltage > init_voltage / 10.0)){
 		    Battery.wh = Battery.power*((Battery.time/60)-(((count-1)*(60.0/Battery.reads_per_minute))/60.0/60.0));
             Battery.ah = Battery.current * ((Battery.time / 60) - (((count - 1) * (60.0 / Battery.reads_per_minute)) / 60.0 / 60.0));
