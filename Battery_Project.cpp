@@ -45,6 +45,8 @@ class CircuitVariables {
         double mamp_hours = 0;
 	    double watt_hours=0;
         double tot_volts = 0;
+        double tot_pwr = 0;
+        double tot_curr  = 0;
         string batt_name;
 	    string date_of_test;
 	    string id;
@@ -80,10 +82,9 @@ int main()
     Voltage_readings << "Resistor ID:," << Battery.id << "\n";
     Voltage_readings << "Date:," << Battery.date_of_test << "\n";
     Voltage_readings << "Load Resistance:," << Battery.resistance << "\n";
-    Voltage_readings << "Ave Volts:," << "\n";
-    Voltage_readings << "Total Watt-Hours:," << "\n";
-    Voltage_readings << "Total mAmp-Hours:," << "\n\n";
-    Voltage_readings << "Minutes,Hours,Voltage (V), Current(mA), Power (W), Watt-Hours, mAmp-Hours" << "\n";
+    Voltage_readings << "Reads Per Minute:," << Battery.reads_per_minute << "\n";
+    Voltage_readings << "Ave Volts:," << "\n" << "Ave Power:," << "\n" << "Ave Current:," << "\n" << "Total Watt-Hours:," << "\n" << "Total mAmp-Hours:," << "\n\n";
+    Voltage_readings << "Minutes,Hours,Voltage (V), Current (mA), Power (W), Watt-Hours, mAmp-Hours" << "\n";
 
     read_LJM.read();
 
@@ -107,6 +108,8 @@ int main()
         if (Battery.voltage > init_voltage / 10.0) {
             avecount += 1;
             Battery.tot_volts += Battery.voltage;
+            Battery.tot_curr += Battery.current;
+                Battery.tot_pwr += Battery.power;
         }
         //calculate total watt hours
 	    if((count != 0) && (Battery.voltage > init_voltage / 10.0)){
@@ -134,6 +137,8 @@ int main()
 
     //Calculate the average voltage
     Battery.tot_volts = Battery.tot_volts / avecount;
+    Battery.tot_curr = Battery.tot_curr / avecount;
+    Battery.tot_pwr = Battery.tot_curr / avecount;
 
     // Close the voltage readings file
     Voltage_readings.close();
@@ -164,6 +169,12 @@ int main()
         }
         else if (line.find("Ave Volts:,") != string::npos) {
             Final_file << "Ave Volts:," << Battery.tot_volts << "\n";
+        }
+        else if (line.find("Ave Current:,") != string::npos) {
+            Final_file << "Ave Current:," << Battery.tot_curr << "\n";
+        }
+        else if (line.find("Ave Power:,") != string::npos) {
+            Final_file << "Ave Power:," << Battery.tot_pwr << "\n";
         }
         else{
 	        Final_file << line << "\n";
