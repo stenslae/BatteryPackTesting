@@ -109,7 +109,7 @@ int main()
             avecount += 1;
             Battery.tot_volts += Battery.voltage;
             Battery.tot_curr += Battery.current;
-                Battery.tot_pwr += Battery.power;
+            Battery.tot_pwr += Battery.power;
         }
         //calculate total watt hours
 	    if((count != 0) && (Battery.voltage > init_voltage / 10.0)){
@@ -138,7 +138,7 @@ int main()
     //Calculate the average voltage
     Battery.tot_volts = Battery.tot_volts / avecount;
     Battery.tot_curr = Battery.tot_curr / avecount;
-    Battery.tot_pwr = Battery.tot_curr / avecount;
+    Battery.tot_pwr = Battery.tot_pwr / avecount;
 
     // Close the voltage readings file
     Voltage_readings.close();
