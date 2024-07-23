@@ -51,7 +51,7 @@ class Variables {
 int main(){
     // Declare/Initialize variables and open LabJack
     long long start, end;
-    double time, mins, hrs, voltage, current, power, wh, ah = 0;
+    double time, mins, hrs, voltage, current, power, wh=0 , ah=0;
     Variables Battery;
     LJM_Open(LJM_dtT7, LJM_ctUSB, LJM_idANY, &Battery.handle);
     start = LJM_GetHostTick();
@@ -101,7 +101,7 @@ int main(){
             // Record the hours that the batter is powering for
             Battery.hours_elapsed = hrs;
             // Save the time of this read for calculations on the next read
-            Battery.oldtime = time;
+            Battery.oldtime = hrs;
         }
         else {
             // Increase end case
