@@ -6,8 +6,6 @@
 #include <sstream>
 #include <windows.h>
 #include <cmath>
-#include <chrono>
-#include <ctime> 
 
 using namespace std;
 
