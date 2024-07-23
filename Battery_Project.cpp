@@ -5,7 +5,6 @@
 #include <string>
 #include <sstream>
 #include <windows.h>
-#include <cmath>
 
 using namespace std;
 
