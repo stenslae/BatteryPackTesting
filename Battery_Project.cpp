@@ -8,58 +8,39 @@
 
 using namespace std;
 
-// Opens LabJack and takes readings of AIN1 and AIN0
-class ReadInitialize {
+// Stores variables
+class Variables {
     public:
-	//initalize variables and constructor
-        int LJMError;
-        const char * channels[2] = {"AIN0", "AIN1"};
-        int handle;
-        int LJMERROR_Val = 0;
-        int num_frames = 2;
-        double values[2];
-
-        ReadInitialize() {
-            // opens handle when object from class is created
-            LJMError = LJM_Open(LJM_dtT7, LJM_ctUSB, "470015117", &handle);
-        }
-        int read() {
-            // updates values
-            LJMError = LJM_eReadNames(handle, num_frames, channels, values, &LJMERROR_Val);
-            return LJMError;
-        }
-};
-
-// Stores calculations of data
-class CircuitVariables {
-    public: 
-	//initialize variables and constructor
-        int reads_per_minute = 60;
+        //Constants:
         double resistance;
-        double voltage;
-	    double power;
-	    double wh;
-        double ah;
-        double current;
+        string batt_name;
+        string date_of_test;
+        string id;
+        int reads_per_minute = 60;
+        int divisor = 60;
+        int handle;
+        double init_voltage;
+        //Iterator:
+        int count = 0;
+        int avecount = 0;
+        int finalreads = 0;
+        double oldtime = 0;
+        //Data variables:
         double hours_elapsed = 0;
         double mamp_hours = 0;
 	    double watt_hours=0;
         double tot_volts = 0;
         double tot_pwr = 0;
         double tot_curr  = 0;
-        string batt_name;
-	    string date_of_test;
-	    string id;
-	    double time=0;
 
-        CircuitVariables() {
-            //input values
-	        cout << "Load Resistor ID: ";
+        Variables() {
+            // Input values
+            cout << "Welcome to the battery test. Your battery should have the positive and negative terminal connected to a load resistor.\nThe positive terminal should then be wired to AIN0, while the negative terminal is wired to GND.\nLoad Resistor ID: ";
 	        cin >> id;
             cout << "Resistor Value: ";
             cin >> resistance;
             cout << "Expected Initial Voltage: ";
-            cin >> voltage;
+            cin >> init_voltage;
             cout << "Name of Battery (no whitespace or special symbols): ";
             cin >> batt_name;
 	        cout << "Date of Test (no whitespace or special symbols): ";
@@ -68,13 +49,15 @@ class CircuitVariables {
 };
 
 int main(){
-    // Create instances of classes
-    CircuitVariables Battery;
-    ReadInitialize read_LJM;
+    // Declare/Initialize variables and open LabJack
+    long long start, end;
+    double time, mins, hrs, voltage, current, power, wh, ah = 0;
+    Variables Battery;
+    LJM_Open(LJM_dtT7, LJM_ctUSB, LJM_idANY, &Battery.handle);
+    start = LJM_GetHostTick();
 
     // Opens file for writing
     ofstream Voltage_readings("../temp.csv");
-
     // Adds summary of tests
     Voltage_readings << "Battery Name:," << Battery.batt_name << "\n";
     Voltage_readings << "Resistor ID:," << Battery.id << "\n";
@@ -82,79 +65,66 @@ int main(){
     Voltage_readings << "Load Resistance:," << Battery.resistance << "\n";
     Voltage_readings << "Reads Per Minute:," << Battery.reads_per_minute << "\n";
     Voltage_readings << "Hours Elapsed:," << "\n" << "Ave Volts:," << "\n" << "Ave Power:," << "\n" << "Ave Current:," << "\n" << "Total Watt-Hours:," << "\n" << "Total mAmp-Hours:," << "\n\n";
-    Voltage_readings << "Time,Minutes,Hours,AIN0,AIN1,Voltage (V), Current (mA), Power (W), Watt-Hours, mAmp-Hours" << "\n";\
-
-    // Initialize variables
-    double init_voltage = Battery.voltage;
-    int count = 0;
-    int avecount = 0;
-    int finalreads = 0;
-    int divisor = 60;
-    long long start = LJM_GetHostTick();
+    Voltage_readings << "Time,Minutes,Hours,Voltage (V), Current (mA), Power (W), Watt-Hours, mAmp-Hours" << "\n";
 
     // Initialize interval loop
     const int INTERVAL_HANDLE = 1;
     LJM_StartInterval(INTERVAL_HANDLE, (60/Battery.reads_per_minute)*1000000);
 
-    // Checks to see if the battery has died and records a few of the dead values
-    while (finalreads <= 60) {
+    // Iterates while battery is still providing power
+    while (Battery.finalreads <= 60) {
+
+        // Reads the voltage
+        LJM_eReadName(Battery.handle, "AIN0", &voltage);
         // Read the data and the time data is read at
-        read_LJM.read();
-        long long end = LJM_GetHostTick();
-        double time = (double)(end - start) / 1000000;
+        end = LJM_GetHostTick();
+        time = (double)(end - start) / 1000000;
 
-        // Takes the voltage and power and time
-        Battery.time = time / 60.0;
-        Battery.voltage = read_LJM.values[0] - read_LJM.values[1];
-        Battery.current = 1000 * Battery.voltage / Battery.resistance;
-        Battery.power = (Battery.voltage * Battery.voltage) / Battery.resistance;
+        // Calculations based off of readings
+        mins = time / 60.0;
+        hrs = mins / 60.0;
+        current = 1000 * voltage / Battery.resistance;
+        power = (voltage*voltage) / Battery.resistance;
 
-        // Sum up the voltage for averaging
-        if (Battery.voltage > init_voltage / 10.0) {
-            avecount += 1;
-            Battery.tot_volts += Battery.voltage;
-            Battery.tot_curr += Battery.current;
-            Battery.tot_pwr += Battery.power;
-        }
-
-        // Calculate total watt hours and mamp hours
-        if ((count != 0) && (Battery.voltage > init_voltage/10.0)) {
-            Battery.wh = Battery.power * ((Battery.time / 60) - (((count - 1) * (60.0 / Battery.reads_per_minute)) / 60.0 / 60.0));
-            Battery.ah = Battery.current * ((Battery.time / 60) - (((count - 1) * (60.0 / Battery.reads_per_minute)) / 60.0 / 60.0));
+        // If the battery is providing power
+        if (voltage > Battery.init_voltage/10.0){
+            // Sum up the values for averaging
+            Battery.avecount += 1;
+            Battery.tot_volts += voltage;
+            Battery.tot_curr += current;
+            Battery.tot_pwr += power;
+            // Calculate watt-hours and mamp-hours
+            wh = power * (hrs - Battery.oldtime);
+            ah = current * (hrs - Battery.oldtime);
+            Battery.watt_hours += wh;
+            Battery.mamp_hours += ah;
+            // Record the hours that the batter is powering for
+            Battery.hours_elapsed = hrs;
+            // Save the time of this read for calculations on the next read
+            Battery.oldtime = time;
         }
         else {
-            Battery.wh = 0;
-            Battery.ah = 0;
+            // Increase end case
+            Battery.finalreads += 1;
         }
-        Battery.watt_hours = Battery.watt_hours + Battery.wh;
-        Battery.mamp_hours = Battery.mamp_hours + Battery.ah;
 
         // Every minute adds a line of data to the data file
-        cout << Battery.voltage << "\n";
-        if (count % divisor == 0) {
-            Voltage_readings << time << "," << Battery.time << "," << Battery.time / 60 << "," << "," << read_LJM.values[0] << "," << "," << read_LJM.values[1] << "," << Battery.voltage << "," << Battery.current << "," << Battery.power << "," << Battery.wh << "," << Battery.ah << "\n";
-        }
-
-        // End case
-        if (Battery.voltage < init_voltage / 10.0) {
-            finalreads += 1;
-        }
-        else {
-            Battery.hours_elapsed = time/60/60;
+        cout << voltage << "\n";
+        if (Battery.count % Battery.divisor == 0) {
+            Voltage_readings << time << "," << mins << "," << hrs << "," << voltage << "," << current << "," << power << "," << wh << "," << ah << "\n";
         }
 
         // Record the amount of reads taken
-	    count += 1;
-
+	    Battery.count += 1;
         // Waits until next interval
         int skip;
         LJM_WaitForNextInterval(INTERVAL_HANDLE, &skip);
     }
 
     // Calculate the average voltage
-    Battery.tot_volts = Battery.tot_volts / avecount;
-    Battery.tot_curr = Battery.tot_curr / avecount;
-    Battery.tot_pwr = Battery.tot_pwr / avecount;
+    Battery.tot_volts = Battery.tot_volts / Battery.avecount;
+    Battery.tot_curr = Battery.tot_curr / Battery.avecount;
+    Battery.tot_pwr = Battery.tot_pwr / Battery.avecount;
 
     // Close the voltage readings file
     Voltage_readings.close();
@@ -199,6 +169,6 @@ int main(){
     Voltage_readings.close();
     Final_file.close();
     remove("temp.csv");
-    LJM_Close(read_LJM.handle);
+    LJM_Close(Battery.handle);
     return 0;
 }
