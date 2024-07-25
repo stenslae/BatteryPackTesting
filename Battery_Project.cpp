@@ -6,6 +6,11 @@
 #include <sstream>
 #include <windows.h>
 
+//CAN UPDATE BEFORE BUILDING:
+int amount_of_reads_per_minute = 60;
+int amount_of_reads_logged_per_minute = 1;
+//---------------------------
+
 using namespace std;
 
 // Stores variables
@@ -16,8 +21,8 @@ class Variables {
         string batt_name;
         string date_of_test;
         string id;
-        int reads_per_minute = 60;
-        int divisor = 60;
+        int reads_per_minute = amount_of_reads_per_minute;
+        int divisor = amount_of_reads_per_minute/amount_of_reads_logged_per_minute;
         int handle;
         double init_voltage;
         //Iterator:
