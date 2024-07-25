@@ -58,7 +58,7 @@ int main(){
 
     // Opens file for writing
     ofstream Voltage_readings("../temp.csv");
-    // Adds summary of tests
+    // Adds summary of test and headers
     Voltage_readings << "Battery Name:," << Battery.batt_name << "\n";
     Voltage_readings << "Resistor ID:," << Battery.id << "\n";
     Voltage_readings << "Date:," << Battery.date_of_test << "\n";
