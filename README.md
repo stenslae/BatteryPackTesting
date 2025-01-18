@@ -13,13 +13,13 @@ Takes readings of the voltage of a load resistor over time to determine the tota
 -Using the measured resistance of 29.6 mOhms, the percent error between the combined resistance of the 5.13 load resistor and the lead wires compared to just the 5.13 Ohm load resistor is 0.58%.
 -By ignoring the resistance of the leads, there is a source of error of 0.58%.
 
-### Resistor Error Analysis Testing and Writeup
+### Resistor Error Analysis Testing
 -The resistors, over a span of a few months, were measured daily to see if time effected the resistor's values. No relationship was found.
-![ADC Sensor Code]()
+![Resistance Vs Time](Images/ResistanceVsTime_Resistors.png)
 -The resistors relationship with temperature and power was measured by using a power supply and a temperature sensor. A linear relationship was found where an increase in temperature cased an increase in resistance, and an increase in power caused an increase in the resistor's temperature.
-![ADC Sensor Code]()
+![Resistance Vs Temp and Temp Vs Power](Images/TemperatureVsPower_Resistors_png)
 -The load resistors peak temperature was measured when put over 5W.
-![ADC Sensor Code]()
+![Temp vs Time](Images/TemperatureVsTime_Batteries.png)
 
 ### Part 2: Code Development
 - Developed code to do continuous reads of voltage at an interval and saves to a csv file. Once the battery pack runs out of power, the program ends the reads and processes the data to get the total Wh.
