@@ -1,24 +1,24 @@
 # Battery Pack Testing
 
 ## Project Description
-Takes readings of the voltage of a load resistor over time to determine the total watt-hours of the battery pack. Uses a LabJack T7.
+- Takes readings of the voltage of a load resistor over time to determine the total watt-hours of the battery pack. Uses a LabJack T7.
 
 ## Development
 ### Lead Error Analysis Writeup
 - When conducting battery tests, a positive and negative lead wire are connected from the battery back to a load resistor with known resistance.  We measure the voltage across this known resistance over time to calculate energy. This energy measurement, however, is slightly less than the actual energy output of the battery pack because a small amount of energy is dissipated by the lead wires and is not included in our measurement.
--The 18 gauge copper lead wires are 15 inches long each. For a temperature range of 25°C to 65°C, the total 30 inches of lead wires is calculated to have a resistance of 16.275-18.775 mOhms.
--When using a DMM to measure to voltage over one of the leads and a load resistor  when attached to a battery pack, the voltage over one of the leads is found to be 14.77mV and the load is 5.11109 V. Since the load resistor is 5.13 ohms, the current is determined to be 0.996313 A. This means that the resistance of the lead we measured would be 14.824 mOhms.
--The resistance of both leads should be about 29.6 mOhms.
--As these measurements were conducted at room temperature, it is assumed that the expected resistance of the leads would be 16.275 mOhms. Our measured resistance is 1.82 times the size of our expected resistance, which most likely comes from the alligator clip connections.
--Using the measured resistance of 29.6 mOhms, the percent error between the combined resistance of the 5.13 load resistor and the lead wires compared to just the 5.13 Ohm load resistor is 0.58%.
--By ignoring the resistance of the leads, there is a source of error of 0.58%.
+- The 18 gauge copper lead wires are 15 inches long each. For a temperature range of 25°C to 65°C, the total 30 inches of lead wires is calculated to have a resistance of 16.275-18.775 mOhms.
+- When using a DMM to measure to voltage over one of the leads and a load resistor  when attached to a battery pack, the voltage over one of the leads is found to be 14.77mV and the load is 5.11109 V. Since the load resistor is 5.13 ohms, the current is determined to be 0.996313 A. This means that the resistance of the lead we measured would be 14.824 mOhms.
+- The resistance of both leads should be about 29.6 mOhms.
+- As these measurements were conducted at room temperature, it is assumed that the expected resistance of the leads would be 16.275 mOhms. Our measured resistance is 1.82 times the size of our expected resistance, which most likely comes from the alligator clip connections.
+- Using the measured resistance of 29.6 mOhms, the percent error between the combined resistance of the 5.13 load resistor and the lead wires compared to just the 5.13 Ohm load resistor is 0.58%.
+- By ignoring the resistance of the leads, there is a source of error of 0.58%.
 
 ### Resistor Error Analysis Testing
--The resistors, over a span of a few months, were measured daily to see if time effected the resistor's values. No relationship was found.
+- The resistors, over a span of a few months, were measured daily to see if time effected the resistor's values. No relationship was found.
 ![Resistance Vs Time](/Images/ResistanceVsTime_Resistors.PNG)
--The resistors relationship with temperature and power was measured by using a power supply and a temperature sensor. A linear relationship was found where an increase in temperature cased an increase in resistance, and an increase in power caused an increase in the resistor's temperature.
+- The resistors relationship with temperature and power was measured by using a power supply and a temperature sensor. A linear relationship was found where an increase in temperature cased an increase in resistance, and an increase in power caused an increase in the resistor's temperature.
 ![Resistance Vs Temp and Temp Vs Power](/Images/TemperatureVsPower_Resistors.PNG)
--The load resistors peak temperature was measured when put over 5W.
+- The load resistors peak temperature was measured when put over 5W.
 ![Temp vs Time](Images/TemparatureVsTime_Batteries.PNG)
 
 ### Part 2: Code Development
@@ -40,7 +40,7 @@ Positive terminal side of resistor -> AIN0
 11. When loaded, you will be able to see the data from the test. Only one read every minute is recorded, but reads were taken every second (unless you change the code). Save the values of the Average Voltage, Total WH, and Total mAH.
 
 ### Battery Pack Results
--For a vast majority of battery packs tested, the advertised Wh is significantly smaller than the actual Wh.
+- For a vast majority of battery packs tested, the advertised Wh is significantly smaller than the actual Wh.
 
 ## Acknowledgments
 - This work was my part of a project at Labjack Corporation, other part of project was done by intern Josh Kempe of Labjack Corporation
