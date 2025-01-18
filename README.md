@@ -17,7 +17,7 @@ Takes readings of the voltage of a load resistor over time to determine the tota
 -The resistors, over a span of a few months, were measured daily to see if time effected the resistor's values. No relationship was found.
 ![Resistance Vs Time](/Images/ResistanceVsTime_Resistors.png)
 -The resistors relationship with temperature and power was measured by using a power supply and a temperature sensor. A linear relationship was found where an increase in temperature cased an increase in resistance, and an increase in power caused an increase in the resistor's temperature.
-![Resistance Vs Temp and Temp Vs Power](/Images/TemperatureVsPower_Resistors_png)
+![Resistance Vs Temp and Temp Vs Power](/Images/TemperatureVsPower_Resistors.png)
 -The load resistors peak temperature was measured when put over 5W.
 ![Temp vs Time](/Images/TemperatureVsTime_Batteries.png)
 
