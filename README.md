@@ -15,11 +15,11 @@ Takes readings of the voltage of a load resistor over time to determine the tota
 
 ### Resistor Error Analysis Testing
 -The resistors, over a span of a few months, were measured daily to see if time effected the resistor's values. No relationship was found.
-![Resistance Vs Time](/Images/ResistanceVsTime_Resistors.png)
+![Resistance Vs Time](/Images/ResistanceVsTime_Resistors.PNG)
 -The resistors relationship with temperature and power was measured by using a power supply and a temperature sensor. A linear relationship was found where an increase in temperature cased an increase in resistance, and an increase in power caused an increase in the resistor's temperature.
-![Resistance Vs Temp and Temp Vs Power](/Images/TemperatureVsPower_Resistors.png)
+![Resistance Vs Temp and Temp Vs Power](/Images/TemperatureVsPower_Resistors.PNG)
 -The load resistors peak temperature was measured when put over 5W.
-![Temp vs Time](/Images/TemperatureVsTime_Batteries.png)
+![Temp vs Time](/Images/TemperatureVsTime_Batteries.PNG)
 
 ### Part 2: Code Development
 - Developed code to do continuous reads of voltage at an interval and saves to a csv file. Once the battery pack runs out of power, the program ends the reads and processes the data to get the total Wh.
